@@ -1,0 +1,4 @@
+# GitHub Pages configuration
+theme: jekyll-theme-minimal
+title: Dice Rolling Game
+description: A fun dice rolling game for multiple players
