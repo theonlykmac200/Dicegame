@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice Rolling Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #5a67d8;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+
+        .setup-section, .game-section {
+            display: none;
+        }
+
+        .setup-section.active, .game-section.active {
+            display: block;
+        }
+
+        .option-group {
+            margin-bottom: 2rem;
+        }
+
+        .option-group h3 {
+            margin-bottom: 1rem;
+            color: #5a67d8;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 0.5rem 1.5rem;
+            background: #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: #5a67d8;
+            color: white;
+        }
+
+        .btn {
+            background: #5a67d8;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 2rem auto 0;
+        }
+
+        .btn:hover {
+            background: #4c51bf;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .current-player {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #5a67d8;
+            margin-bottom: 2rem;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .die {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 2px solid #5a67d8;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .die.rolling {
+            animation: roll 0.5s ease-in-out;
+        }
+
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .total {
+            text-align: center;
+            font-size: 1.5rem;
+            margin: 1rem 0;
+            color: #5a67d8;
+        }
+
+        .scores {
+            margin-top: 2rem;
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .scores h3 {
+            color: #5a67d8;
+            margin-bottom: 1rem;
+        }
+
+        .player-score {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .player-score:last-child {
+            border-bottom: none;
+        }
+
+        .back-btn {
+            background: #718096;
+            margin-top: 1rem;
+        }
+
+        .back-btn:hover {
+            background: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Dice Rolling Game 🎲</h1>
+        
+        <!-- Setup Section -->
+        <div class="setup-section active" id="setupSection">
+            <div class="option-group">
+                <h3>Number of Players:</h3>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="players1" name="players" value="1" checked>
+                        <label for="players1">1</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="players2" name="players" value="2">
+                        <label for="players2">2</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="players3" name="players" value="3">
+                        <label for="players3">3</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="players4" name="players" value="4">
+                        <label for="players4">4</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="players5" name="players" value="5">
+                        <label for="players5">5</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="players6" name="players" value="6">
+                        <label for="players6">6</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="option-group">
+                <h3>Number of Dice:</h3>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="dice1" name="dice" value="1" checked>
+                        <label for="dice1">1</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="dice2" name="dice" value="2">
+                        <label for="dice2">2</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="dice3" name="dice" value="3">
+                        <label for="dice3">3</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="dice4" name="dice" value="4">
+                        <label for="dice4">4</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="dice5" name="dice" value="5">
+                        <label for="dice5">5</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="dice6" name="dice" value="6">
+                        <label for="dice6">6</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="startGame()">Start Game</button>
+        </div>
+        
+        <!-- Game Section -->
+        <div class="game-section" id="gameSection">
+            <div class="current-player" id="currentPlayer">Player 1's Turn</div>
+            
+            <div class="dice-container" id="diceContainer"></div>
+            
+            <div class="total" id="total"></div>
+            
+            <button class="btn" onclick="rollDice()">Roll Dice!</button>
+            
+            <div class="scores">
+                <h3>Scores</h3>
+                <div id="scoreBoard"></div>
+            </div>
+            
+            <button class="btn back-btn" onclick="newGame()">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        let numPlayers = 1;
+        let numDice = 1;
+        let currentPlayer = 0;
+        let playerScores = {};
+        
+        // Dice faces
+        const diceFaces = {
+            1: '⚀',
+            2: '⚁',
+            3: '⚂',
+            4: '⚃',
+            5: '⚄',
+            6: '⚅'
+        };
+        
+        function startGame() {
+            // Get selected values
+            numPlayers = parseInt(document.querySelector('input[name="players"]:checked').value);
+            numDice = parseInt(document.querySelector('input[name="dice"]:checked').value);
+            
+            // Reset game state
+            currentPlayer = 0;
+            playerScores = {};
+            for (let i = 0; i < numPlayers; i++) {
+                playerScores[i] = [];
+            }
+            
+            // Switch screens
+            document.getElementById('setupSection').classList.remove('active');
+            document.getElementById('gameSection').classList.add('active');
+            
+            // Initialize score board
+            updateScoreBoard();
+            updateCurrentPlayer();
+        }
+        
+        function rollDice() {
+            const diceContainer = document.getElementById('diceContainer');
+            const totalElement = document.getElementById('total');
+            
+            // Clear previous dice
+            diceContainer.innerHTML = '';
+            totalElement.innerHTML = '';
+            
+            let total = 0;
+            const rolls = [];
+            
+            // Roll each die
+            for (let i = 0; i < numDice; i++) {
+                const result = Math.floor(Math.random() * 6) + 1;
+                rolls.push(result);
+                total += result;
+                
+                // Create die element
+                const die = document.createElement('div');
+                die.className = 'die rolling';
+                die.textContent = diceFaces[result];
+                diceContainer.appendChild(die);
+                
+                // Remove rolling animation after it completes
+                setTimeout(() => {
+                    die.classList.remove('rolling');
+                }, 500);
+            }
+            
+            // Show total after animation
+            setTimeout(() => {
+                totalElement.textContent = `Total: ${total}`;
+            }, 500);
+            
+            // Update scores
+            playerScores[currentPlayer].push(total);
+            
+            // Move to next player
+            currentPlayer = (currentPlayer + 1) % numPlayers;
+            
+            // Update UI
+            setTimeout(() => {
+                updateScoreBoard();
+                updateCurrentPlayer();
+            }, 1000);
+        }
+        
+        function updateCurrentPlayer() {
+            document.getElementById('currentPlayer').textContent = `Player ${currentPlayer + 1}'s Turn`;
+        }
+        
+        function updateScoreBoard() {
+            const scoreBoard = document.getElementById('scoreBoard');
+            scoreBoard.innerHTML = '';
+            
+            for (let i = 0; i < numPlayers; i++) {
+                const playerDiv = document.createElement('div');
+                playerDiv.className = 'player-score';
+                
+                if (playerScores[i] && playerScores[i].length > 0) {
+                    const rolls = playerScores[i];
+                    const total = rolls.reduce((a, b) => a + b, 0);
+                    const avg = (total / rolls.length).toFixed(1);
+                    const lastRolls = rolls.slice(-5).join(', ');
+                    
+                    playerDiv.innerHTML = `<strong>Player ${i + 1}:</strong> 
+                        Last rolls: [${lastRolls}] | 
+                        Total: ${total} | 
+                        Average: ${avg}`;
+                } else {
+                    playerDiv.innerHTML = `<strong>Player ${i + 1}:</strong> No rolls yet`;
+                }
+                
+                scoreBoard.appendChild(playerDiv);
+            }
+        }
+        
+        function newGame() {
+            // Switch back to setup screen
+            document.getElementById('gameSection').classList.remove('active');
+            document.getElementById('setupSection').classList.add('active');
+            
+            // Clear dice container
+            document.getElementById('diceContainer').innerHTML = '';
+            document.getElementById('total').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
